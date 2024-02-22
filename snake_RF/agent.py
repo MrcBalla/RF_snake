@@ -35,10 +35,7 @@ class Agent:
         self.optimizer_critic = tf.optimizers.legacy.Adam(step_size)
         self.batch_size = batch_size
 
-    def mask(self, env:BaseEnvironment):
-        # the idea is to mask an action that is not useful, since it does not 
-        # make any sense
-        pass
+
 
     def learn(self, states, new_states, samples, rewards, dones, masks):
         """
