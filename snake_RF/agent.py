@@ -18,7 +18,7 @@ class Agent:
             tf.keras.layers.Dense(64),
             tf.keras.layers.BatchNormalization(),
             tf.keras.layers.Activation(tf.nn.tanh),
-            tf.keras.layers.Dense(len(env.only_letters_list), activation=tf.nn.softmax,
+            tf.keras.layers.Dense(5, activation=tf.nn.softmax,
                                   kernel_initializer=tf.initializers.RandomNormal(stddev=0.005),
                                   bias_initializer=tf.initializers.RandomNormal(stddev=0.005))
         ])
