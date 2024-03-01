@@ -196,9 +196,9 @@ class Agent:
         for _ in range(self.actor_rep):
             indexes = np.random.choice(range(0, len(states)), min(self.batch_size, len(states)), replace=False)
             with tf.GradientTape() as a_tape:
-                probs = self.actor(states[indexes])
-                probs = probs * masks[indexes]
-                probs = probs / tf.reduce_sum(probs, axis=-1, keepdims=True)
+                probs = self.actor(states[indexes]) # compute the probability of these states
+                probs = probs * masks[indexes] # apply a mask for not sensate action
+                probs = probs / tf.reduce_sum(probs, axis=-1, keepdims=True) # to sum to 1
                 selected_actions_probs = tf.reduce_sum(probs * actions[indexes], axis=-1, keepdims=True)   # the more difficult part, look at gahter on tensorflow or similar stuff, it will do similarly
                 if initial_probs is None: initial_probs = tf.convert_to_tensor(tf.stop_gradient(selected_actions_probs))
                 importance_sampling_ratio = selected_actions_probs / initial_probs

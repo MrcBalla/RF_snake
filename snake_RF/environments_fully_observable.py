@@ -134,6 +134,10 @@ class BaseEnvironment:
 
     def to_state(self):
         return K.utils.to_categorical(self.boards)[..., 1:]
+    # this is quite odd, the idea is to provide this with a one hot encoding, for each element
+    # we check if it is 0,2,3,4. The main thing is that we are considering just the 1,2,3,4; 
+    # the resulting element is a tensor, 7X7x4, dove la singola matrice ci indica l'encoding
+    # rispetto all'elemento i (matrix) e j (riga della singla matrice), rispetto all'azione
 
     def get_board(self):
         raise NotImplementedError()
@@ -155,10 +159,10 @@ class OriginalSnakeEnvironment(BaseEnvironment):
 
     def get_board(self):
         board = np.ones((self.board_size, self.board_size)) * self.EMPTY
-        board[[0, -1], :] = self.WALL
-        board[:, [0, -1]] = self.WALL
+        board[[0, -1], :] = self.WALL # this place the wall all over the board
+        board[:, [0, -1]] = self.WALL # the same as before 
         # add head, add fruit
-        available = np.argwhere(board == self.EMPTY)
-        ind = available[np.random.choice(range(len(available)))]
-        board[ind[0], ind[1]] = self.HEAD
+        available = np.argwhere(board == self.EMPTY) # find available places in the board not full of wall
+        ind = available[np.random.choice(range(len(available)))] # choose randomly some index
+        board[ind[0], ind[1]] = self.HEAD # put the head 
         return board

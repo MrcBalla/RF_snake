@@ -3,44 +3,35 @@ import tensorflow as tf
 import numpy as np
 from environments_fully_observable import *
 from environments_partially_observable import *
+import environments_fully_observable 
 
-def value_function(input_dim):
-    X_input=tf.keras.Input(input_dim)
-    X=tf.keras.layers.Dense(64)(X_input)
-    X=tf.keras.layers.BatchNormalization()(X)
-    X=tf.keras.layers.Activation(tf.nn.tanh)(X)
-    X=tf.keras.layers.Dense(64)
-    X=tf.keras.layers.BatchNormalization()(X)
-    X=tf.keras.layers.Activation(tf.nn.tanh)(X)
-    X_final=tf.keras.layers.Dense(1, activation=tf.nn.softmax,
+class agent:
+    def __init__(self, env:environments_fully_observable, step_size=0.001, batch_size=256) -> None:
+        self.discount = 0.99
+        self.clip_eps = 0
+        self.actor_rep = 0
+        self.critic_rep = 0
+        self.actor = tf.keras.Sequential([
+            tf.keras.layers.Dense(64),
+            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.Activation(tf.nn.tanh),
+            tf.keras.layers.Dense(64),
+            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.Activation(tf.nn.tanh),
+            tf.keras.layers.Dense(len(env.only_letters_list), activation=tf.nn.softmax,
                                   kernel_initializer=tf.initializers.RandomNormal(stddev=0.005),
-                                  bias_initializer=tf.initializers.RandomNormal(stddev=0.005))(X)
-    model=tf.keras.Model(X_input, X_final)
-    return model 
-
-def actor_function(input_dim):
-    X_input=tf.keras.Input(input_dim)
-    X=tf.keras.layers.Dense(64)(X_input)
-    X=tf.keras.layers.BatchNormalization()(X)
-    X=tf.keras.layers.Activation(tf.nn.tanh)(X)
-    X=tf.keras.layers.Dense(64)
-    X=tf.keras.layers.BatchNormalization()(X)
-    X=tf.keras.layers.Activation(tf.nn.tanh)(X)
-    X_final=tf.keras.layers.Dense(5, activation=tf.nn.softmax,
-                                  kernel_initializer=tf.initializers.RandomNormal(stddev=0.005),
-                                  bias_initializer=tf.initializers.RandomNormal(stddev=0.005))(X)
-    model=tf.keras.Model(X_input, X_final)
-    return model
-    
-def critic_function(input_dim):
-    X_input=tf.keras.Input(input_dim)
-    X=tf.keras.layers.Dense(64)(X_input)
-    X=tf.keras.layers.BatchNormalization()(X)
-    X=tf.keras.layers.Activation(tf.nn.tanh)(X)
-    X=tf.keras.layers.Dense(64)(X)
-    X=tf.keras.layers.BatchNormalization()(X)
-    X=tf.keras.layers.Activation(tf.nn.tanh)(X)
-    X_final=tf.keras.layers.Dense(1, activation="linear")(X)
-
-    model=tf.keras.Model(X_input, X_final)
-    return model
+                                  bias_initializer=tf.initializers.RandomNormal(stddev=0.005))
+        ])
+        self.critic = tf.keras.Sequential([
+            tf.keras.layers.Dense(64),
+            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.Activation(tf.nn.tanh),
+            tf.keras.layers.Dense(64),
+            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.Activation(tf.nn.tanh),
+            tf.keras.layers.Dense(1, activation="linear")
+        ])
+        self.optimizer_actor = tf.optimizers.legacy.Adam(step_size)
+        self.optimizer_critic = tf.optimizers.legacy.Adam(step_size)
+        self.batch_size = batch_size
+        
