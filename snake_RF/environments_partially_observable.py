@@ -164,8 +164,10 @@ class OriginalSnakeEnvironment(BaseEnvironment):
         board = np.ones((self.board_size, self.board_size)) * self.EMPTY
         board[[0, -1], :] = self.WALL
         board[:, [0, -1]] = self.WALL
-        # add head, add fruit
+        # add the head
         available = np.argwhere(board == self.EMPTY)
         ind = available[np.random.choice(range(len(available)))]
         board[ind[0], ind[1]] = self.HEAD
         return board
+
+
