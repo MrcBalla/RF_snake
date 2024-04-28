@@ -32,7 +32,7 @@ def get_dataset(path):
 
 class Environment:
     """
-    Environment used for hangman
+    Environmen t used for hangman
     """
     def __init__(self, path, max_lives=10):
         self.dataset, self.letters_count, self.letters_list = get_dataset(path)
@@ -84,8 +84,8 @@ class Environment:
         self.already_chosen_letters.append(letter) 
 
         if letter not in self.current_word_remaining:
-            self.lives += 1
-            if self.lives == self.max_lives:   # you done, fail
+            self.lifes += 1
+            if self.lifes == self.max_lives:   # you done, fail
                 self.reset()
                 return -1, 1
             return 0, 0
@@ -101,7 +101,7 @@ class Environment:
         """
         reset environment / reinitialize
         """
-        self.lives = 0
+        self.lifes= 0
         self.current_word = self.dataset[random.randrange(0, len(self.dataset))]
         self.current_word_remaining = self.current_word
         self.already_chosen_letters = []
