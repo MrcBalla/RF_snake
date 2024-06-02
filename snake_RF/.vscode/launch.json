@@ -8,7 +8,7 @@
             "name": "Python Debugger: Module",
             "type": "debugpy",
             "request": "launch"
-            "program": "/home/marco/Documents/snake/snake_RF"
+            "program":"/home/marco/Documents/snake/snake_RF/main.py"
         }
     ]
 }
