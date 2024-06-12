@@ -56,5 +56,22 @@ def main():
         if e > 50: reward_history_conv.append(np.mean(rewards))
     plt.plot(reward_history_conv)
 
+def rebuild_action_path(prioirty_stack, last_postion, lista: list):
+    if prioirty_stack[tuple(last_postion)]==None:
+        return lista
+    else:
+        prev=prioirty_stack[tuple(last_postion)]
+        lista.append(prev)
+        rebuild_action_path(prioirty_stack, prev, lista)
+
+def main_bfs():
+    env_ = get_env()
+    state=env_.to_state()
+    p,sl=BFS_search(state[0,:,:])
+    lista=rebuild_action_path(sl, p, [])
+    
+
+
+
 if __name__=='__main__':
-    main()
+    main_bfs()

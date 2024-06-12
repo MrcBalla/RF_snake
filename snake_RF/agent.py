@@ -303,26 +303,45 @@ class DQN:
         
         #print("end  ---------------------------------------------")
 
-        heads = np.argwhere(self.boards == self.HEAD)
-        actions = np.array(actions)
-        # init rewards
-        rewards = np.zeros(self.n_boards, dtype=float)
-        # calculate action offset (from 0,1,2,3 to +1/-1 in x/y)
-        dx = np.zeros(len(actions))
-        dx[np.where(actions == self.UP)[0]] = 1
-        dx[np.where(actions == self.DOWN)[0]] = -1
-        dy = np.zeros(len(actions))
-        dy[np.where(actions == self.RIGHT)[0]] = 1
-        dy[np.where(actions == self.LEFT)[0]] = -1
-        offset = np.hstack((np.zeros_like(actions), dx[:, None], dy[:, None]))
-        # new heads per board
-        new_heads = (heads + offset).astype(int)
-        # find heads that hit the wall, and for those set the new_head to the current one (no move)
-        # and the reward
-        hit_wall = self.check_actions(new_heads)
+def compute_neighbours(pos):
+    pos_return_0 = np.copy(pos)
+    pos_return_1 = np.copy(pos)
+    pos_return_2 = np.copy(pos)
+    pos_return_3 = np.copy(pos)
 
-def BFS_search(state, ending):
-    
+    pos_return_0[0] = pos_return_0[0]+1 # move at right
+    pos_return_1[1] = pos_return_1[1]+1 # move up
+    pos_return_2[0] = pos_return_2[0]-1 # move at left
+    pos_return_3[1] = pos_return_3[1]-1 # move down
+
+    return [pos_return_0, pos_return_1, pos_return_2, pos_return_3]
+
+def BFS_search(state):
+    visited={}
+    selected_path={}
+    heads = np.argwhere(state[:,:,1] == 1)[0] # position of the head
+    fruit = np.argwhere(state[:,:,3] == 1)[0] # position of the fruit
+    boundary = np.argwhere(state[:,:,0] == 0)
+    q=[heads]
+    visited[tuple(heads)]=True
+    selected_path[tuple(heads)]=None
+
+
+    while len(q)!=0:
+        node = q.pop(0)
+        new_pos=compute_neighbours(node)
+
+        for pos in new_pos:
+            if tuple(pos)==tuple(fruit):
+                selected_path[tuple(pos)]=tuple(node)
+                return [pos,selected_path]
+            if not (np.any(np.all(boundary == pos, axis=1))):
+                selected_path[tuple(pos)]=tuple(node)
+                q.append(pos)
+            
+
+
+        
 
             
 
