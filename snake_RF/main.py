@@ -56,21 +56,40 @@ def main():
         if e > 50: reward_history_conv.append(np.mean(rewards))
     plt.plot(reward_history_conv)
 
+def rebuild_action(list_of_position):
+    action=[]
+    list_of_position=np.array(list_of_position)
+    for index in range(len(list_of_position)-1):
+        if np.all(list_of_position[index]-list_of_position[index+1]==np.array([0,1])):
+            action.append(3)
+        if np.all(list_of_position[index]-list_of_position[index+1]==np.array([1,0])):
+            action.append(0)
+        if np.all(list_of_position[index]-list_of_position[index+1]==np.array([0,-1])):
+            action.append(1)
+        if np.all(list_of_position[index]-list_of_position[index+1]==np.array([-1,0])):
+            action.append(2)
+    return action
+
+
 def rebuild_action_path(prioirty_stack, last_postion, lista: list):
     if prioirty_stack[tuple(last_postion)]==None:
         return lista
     else:
         prev=prioirty_stack[tuple(last_postion)]
         lista.append(prev)
-        rebuild_action_path(prioirty_stack, prev, lista)
+        return rebuild_action_path(prioirty_stack, prev, lista)
 
 def main_bfs():
     env_ = get_env()
     state=env_.to_state()
-    p,sl=BFS_search(state[0,:,:])
-    lista=rebuild_action_path(sl, p, [])
-    
-
+    action_list_all_state=[]
+    for i in range(state.shape[0]):
+        p,sl=BFS_search(state[i,:,:])
+        action=rebuild_action_path(sl, p, [])
+        action.insert(0, p)
+        action_list=rebuild_action(action)
+        action_list_all_state=action_list_all_state+action_list
+    print(1)
 
 
 if __name__=='__main__':
