@@ -323,7 +323,13 @@ def BFS_search(state):
     fruit = np.argwhere(state[:,:,3] == 1)[0] # position of the fruit
     boundary = np.argwhere(state[:,:,0] == 0)
     q=[heads]
+
+    for a in range(8):
+        for b in range(8):
+            visited[(a,b)]=False
+
     visited[tuple(heads)]=True
+
     selected_path[tuple(heads)]=None
 
 
@@ -334,24 +340,10 @@ def BFS_search(state):
         for pos in new_pos:
             if tuple(pos)==tuple(fruit):
                 selected_path[tuple(pos)]=tuple(node)
-                return [pos,selected_path]
-            if not (np.any(np.all(boundary == pos, axis=1))):
+                visited[tuple(pos)]
+                node=[]
+                return pos, selected_path
+            if not (np.any(np.all(boundary == pos, axis=1))) and visited[tuple(pos)]==False:
                 selected_path[tuple(pos)]=tuple(node)
+                visited[tuple(pos)]=True
                 q.append(pos)
-            
-
-
-        
-
-            
-
-
-    
-
-        
-        
-        
-
-
-
-

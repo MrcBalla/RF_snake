@@ -30,6 +30,7 @@ def main():
     agent=DQN(env=env_)
     step=1
     for e in range(EPOCHS):
+        
         if e%50==0:
             print(f"{e}/{EPOCHS} - {np.mean(reward_history_conv[-30:]) or 0}", end="\n")
         
@@ -82,13 +83,25 @@ def rebuild_action_path(prioirty_stack, last_postion, lista: list):
 def main_bfs():
     env_ = get_env()
     state=env_.to_state()
-    action_list_all_state=[]
+    action_list_all_state={}
     for i in range(state.shape[0]):
         p,sl=BFS_search(state[i,:,:])
         action=rebuild_action_path(sl, p, [])
         action.insert(0, p)
         action_list=rebuild_action(action)
-        action_list_all_state=action_list_all_state+action_list
+        action_list_all_state[i]=action_list
+
+    #tf.reshape(tf.convert_to_tensor(action_list_all_state), (3341,1))
+
+    action=[]
+    for chiave in action_list_all_state.keys():
+        try:
+            action.append(action_list_all_state[chiave][0])
+        except TypeError:
+            action.append(action_list_all_state[chiave])
+    
+    reward=env_.move(tf.reshape(tf.convert_to_tensor(action), (1000,1)))
+        
     print(1)
 
 
