@@ -22,7 +22,7 @@ The experiments can be run with different modality, the basic command is:
     python main.py +preset=<preset> 
 ```
 where the value preset could be chosen between qm9_distance and gdb13_distance.
-After the \<preset>\ it's possible to mention the \<seed>\, the modality of running \<mode>\ between \<eval>\, \<train+eval>\ and \<train>\. 
+After the \<preset\> it's possible to mention the \<seed\>, the modality of running \<mode\> between \<eval\>, \<train+eval\> and \<train\>. 
 All the parameters relative to the training and evaluation phase could be seen inside ./config\ folder.
 
 ### Datasets
